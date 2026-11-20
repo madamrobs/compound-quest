@@ -1,1 +1,97 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mole Bakery | A Stoichiometry Adventure</title>
+<style>
+:root{--cream:#fff8ec;--paper:#fffdf8;--brown:#6f4632;--deep:#432b24;--pink:#e9a9a0;--peach:#f5c9a8;--gold:#e7b85d;--green:#668b70;--red:#b85c50;--muted:#8d776a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,#fff1db,transparent 38%),linear-gradient(135deg,#f8e5d4,#fff8ec);color:var(--deep);font-family:Georgia,'Times New Roman',serif;min-height:100vh}
+header{padding:26px 18px 16px;text-align:center}.eyebrow{letter-spacing:3px;text-transform:uppercase;font:700 11px Arial;color:#a36b54}.brand{font-size:clamp(34px,6vw,56px);margin:8px 0 4px;color:var(--brown)}.subtitle{font:15px Arial;color:var(--muted)}
+.shell{max-width:920px;margin:0 auto;padding:10px 18px 48px}.topline{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:8px 0 10px;font:13px Arial;color:var(--brown)}.progress{height:10px;background:#ead8c8;border-radius:20px;overflow:hidden}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .4s}
+.card{background:var(--paper);border:1px solid #ead8c8;border-radius:22px;padding:clamp(20px,4vw,36px);margin-top:22px;box-shadow:0 12px 32px #6f46321a}.stage-tag{display:inline-block;background:#f8e8df;color:#985f4b;border-radius:30px;padding:7px 12px;font:700 11px Arial;letter-spacing:1px;text-transform:uppercase}.stage-title{font-size:clamp(26px,4vw,36px);margin:13px 0 8px;color:var(--brown)}.intro{font:16px/1.6 Arial;color:#6e5b50;max-width:720px}.bakery-art{font-size:48px;text-align:center;margin:10px 0 18px;letter-spacing:9px}.question{font-size:21px;line-height:1.4;margin:22px 0 16px}.choices{display:grid;gap:10px}.choice{width:100%;text-align:left;border:1.5px solid #e7d5c5;background:#fffaf3;padding:14px 16px;border-radius:13px;color:var(--deep);font:15px/1.4 Arial;cursor:pointer;transition:.2s}.choice:hover:not(:disabled){border-color:#c88d76;background:#fff1e7;transform:translateY(-1px)}.choice:disabled{cursor:default;opacity:1}.choice.correct{border-color:var(--green);background:#edf5ed}.choice.wrong{border-color:var(--red);background:#fff0ed}.feedback{display:none;margin-top:16px;padding:15px 17px;border-radius:13px;font:14px/1.55 Arial}.feedback.show{display:block}.feedback.good{background:#edf5ed;color:#355d3e}.feedback.try{background:#fff0ed;color:#85443d}.controls{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:22px}.btn{border:0;border-radius:30px;padding:12px 21px;background:var(--brown);color:white;font:700 14px Arial;cursor:pointer}.btn:hover{background:#513326}.btn.secondary{background:#f2e3d7;color:var(--brown)}.btn:disabled{opacity:.4;cursor:not-allowed}.score{font:700 13px Arial;color:var(--muted)}.equation{background:#fbf0e5;border:1px dashed #d6ad91;border-radius:14px;padding:18px;text-align:center;font-size:clamp(20px,4vw,28px);color:#6e4231;margin:18px 0}.fact{border-left:4px solid var(--gold);padding:10px 14px;background:#fff9ed;font:14px/1.55 Arial;color:#6e5b50;margin:16px 0}.hidden{display:none!important}.complete{text-align:center}.complete .big{font-size:64px}.complete h2{font-size:34px;color:var(--brown)}.complete p{font:16px/1.6 Arial;color:#6e5b50}.footer{text-align:center;font:12px Arial;color:#9b8577;margin:22px 0}.pill{display:inline-block;padding:6px 10px;border-radius:30px;background:#f8e8df;color:#985f4b;font:700 12px Arial}
+@media(max-width:560px){.controls{align-items:stretch;flex-direction:column}.controls .btn{width:100%}.topline{font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">A sweet introduction to chemistry</div><h1 class="brand">🥐 The Mole Bakery 🧪</h1><div class="subtitle">A four-stage adventure from counting treats to reading reaction recipes</div></header>
+<main class="shell">
+  <div class="topline"><span id="stageLabel">Stage 1 of 4 · Bakery Orders</span><span id="scoreLabel">Score: 0 / 0</span></div>
+  <div class="progress"><span id="progressFill"></span></div>
+  <section class="card" id="gameCard">
+    <div class="stage-tag" id="stageTag">Stage 1 · Counting units</div>
+    <div class="bakery-art" id="art">🥖 🥯 🧁</div>
+    <h2 class="stage-title" id="stageTitle">Bakery Orders</h2>
+    <p class="intro" id="stageIntro">At a bakery, it is easier to count some items in groups. Chemistry uses counting units too!</p>
+    <div id="questionArea"></div>
+    <div class="controls"><span class="score" id="questionCount">Question 1</span><button class="btn" id="nextBtn" disabled>Next question →</button></div>
+  </section>
+  <section class="card complete hidden" id="completeCard">
+    <div class="big">🎉 🥐 🎉</div><span class="pill">Bakery adventure complete</span>
+    <h2>You've earned your Mole Master apron!</h2>
+    <p id="finalText"></p>
+    <div class="equation">2H₂ + O₂ → 2H₂O</div>
+    <p><strong>Remember:</strong> 2 moles of hydrogen react with 1 mole of oxygen to produce 2 moles of water.</p>
+    <button class="btn" onclick="restart()">Bake again ↻</button>
+  </section>
+  <div class="footer">The Mole Bakery · Grade 9 Chemistry · Learn one delicious concept at a time</div>
+</main>
+<script>
+const stages=[
+{tag:"Stage 1 · Counting units",title:"Bakery Orders",art:"🥖 🥯 🧁",intro:"At a bakery, it is easier to count some items in groups. Chemistry uses counting units too! A dozen always means 12 items.",qs:[
+{q:"A customer orders 2 dozen cupcakes. How many cupcakes should the baker prepare?",a:["12 cupcakes","18 cupcakes","24 cupcakes","dozen cupcakes"],c:2,e:"One dozen is 12. Therefore, 2 dozen = 2 × 12 = 24 cupcakes."},
+{q:"Which statement correctly describes a dozen?",a:["A group of 6 items","A group of 10 items","A group of 12 items","A group of 100 items"],c:2,e:"A dozen is a counting unit that represents 12 items, just as a pair represents 2."},
+{q:"Why might a chemist use a special counting unit for atoms and molecules?",a:["They are too small and numerous to count one by one","They are always visible","They do not have mass","They come in groups of exactly 12"],c:0,e:"Atoms and molecules are extremely tiny and occur in huge numbers, so chemists use a convenient counting unit called the mole."}]},
+{tag:"Stage 2 · Chemical kitchen",title:"The Chemical Kitchen",art:"⚗️ 🍞 🔥",intro:"A chemical reaction is like a recipe: starting substances change into new substances. Let's identify the ingredients and the result.",qs:[
+{q:"In a chemical reaction, what are the starting substances called?",a:["Products","Reactants","Coefficients","Mixtures"],c:1,e:"Reactants are the substances present at the start of a chemical reaction. They are the ingredients in our chemistry recipe."},
+{q:"What do we call the substances formed by a chemical reaction?",a:["Reactants","Elements","Products","Subscripts"],c:2,e:"Products are the new substances formed during a chemical reaction."},
+{q:"In the equation 2H₂ + O₂ → 2H₂O, which substance is a product?",a:["H₂","O₂","H₂O","Both H₂ and O₂"],c:2,e:"The arrow points from reactants to products. H₂O is on the right side, so it is the product."},
+{q:"What does a balanced chemical equation show?",a:["The same number of each type of atom on both sides","The same number of molecules on both sides in every reaction","That no reaction happened","That products are always gases"],c:0,e:"A balanced equation follows conservation of atoms: each element has the same number of atoms on the reactant and product sides."}]},
+{tag:"Stage 3 · The mole connection",title:"The Mole Connection",art:"🔬 🍩 ✨",intro:"Chemists need a counting unit much larger than a dozen. That unit is the mole, abbreviated mol.",qs:[
+{q:"What is Avogadro's number?",a:["6.02 × 10²","6.02 × 10²³","6.02 × 10⁻²³","12 × 10²³"],c:1,e:"One mole contains approximately 6.02 × 10²³ representative particles. This is called Avogadro's number."},
+{q:"One mole of a substance contains approximately how many particles?",a:["12 particles","100 particles","6.02 × 10²³ particles","1,000 particles"],c:2,e:"A mole is a counting unit, just like a dozen, but it represents an enormous number: about 602 sextillion particles."},
+{q:"Which comparison is correct?",a:["A dozen = 12; a mole ≈ 6.02 × 10²³","A dozen = 6.02 × 10²³; a mole = 12","A dozen and a mole both equal 12","A mole is a unit of temperature"],c:0,e:"A dozen counts 12 items. A mole counts approximately 6.02 × 10²³ particles, such as atoms, molecules, or ions."}]},
+{tag:"Stage 4 · Reading a reaction recipe",title:"Reading the Recipe of a Reaction",art:"💧 ⚗️ 💧",intro:"Now let's read a balanced chemical equation as a recipe. The large numbers in front of formulas are coefficients; they show the relative amounts.",qs:[
+{q:"Study the equation. What is the mole ratio of hydrogen (H₂) to oxygen (O₂)?",eq:"2H₂ + O₂ → 2H₂O",a:["1 : 1","2 : 1","1 : 2","2 : 2 : 1"],c:1,e:"The coefficients are 2 for H₂ and 1 for O₂. The mole ratio H₂ : O₂ is 2 : 1."},
+{q:"According to 2H₂ + O₂ → 2H₂O, how many moles of water are produced when the reaction follows the equation's ratio?",eq:"2H₂ + O₂ → 2H₂O",a:["1 mole","2 moles","3 moles","4 moles"],c:1,e:"The coefficient in front of H₂O is 2. The equation's recipe produces 2 moles of water for every 2 moles of hydrogen that react with 1 mole of oxygen."},
+{q:"If 2 moles of hydrogen react completely with 1 mole of oxygen, how many moles of water are produced?",eq:"2 mol H₂ + 1 mol O₂ → ? mol H₂O",a:["1 mole","2 moles","3 moles","4 moles"],c:1,e:"The balanced equation gives the ratio 2 : 1 : 2. Therefore, 2 moles of H₂ react with 1 mole of O₂ to produce 2 moles of H₂O."},
+{q:"What do the coefficients in a balanced chemical equation represent in stoichiometry?",a:["The relative number of moles of each substance","The colors of the substances","The mass of one atom","The temperature of the reaction"],c:0,e:"Coefficients give the relative amounts, in molecules or moles, that participate in the reaction. These ratios are the starting point for stoichiometry."}]}
+];
+let stageIndex=0,qIndex=0,score=0,answered=0,locked=false;
+const $=id=>document.getElementById(id);
+function updateTop(){ $("stageLabel").textContent=`Stage ${stageIndex+1} of 4 · ${stages[stageIndex].title}`;$("scoreLabel").textContent=`Score: ${score} / ${answered}`;$("progressFill").style.width=`${((stageIndex+qIndex/stages[stageIndex].qs.length)/4)*100}%`;}
+function render(){
+ const s=stages[stageIndex],q=s.qs[qIndex];locked=false;
+ $("stageTag").textContent=s.tag;$("stageTitle").textContent=s.title;$("art").textContent=s.art;$("stageIntro").textContent=s.intro;
+ $("questionCount").textContent=`Question ${qIndex+1} of ${s.qs.length}`;$("nextBtn").disabled=true;$("nextBtn").textContent=qIndex===s.qs.length-1?(stageIndex===3?"See my results →":"Next stage →"):"Next question →";
+ let out=`<div class="question">${q.q}</div>`;
+ if(q.eq)out+=`<div class="equation">${q.eq}</div>`;
+ out+='<div class="choices">'+q.a.map((a,i)=>`<button class="choice" data-index="${i}">${String.fromCharCode(65+i)}. ${a}</button>`).join("")+'</div><div class="feedback" id="feedback"></div>';
+ $("questionArea").innerHTML=out;
+ document.querySelectorAll(".choice").forEach(b=>b.addEventListener("click",()=>choose(Number(b.dataset.index))));
+ updateTop();
+}
+function choose(i){
+ if(locked)return;locked=true;const q=stages[stageIndex].qs[qIndex],buttons=[...document.querySelectorAll(".choice")],good=i===q.c;
+ answered++;if(good)score++;
+ buttons.forEach((b,n)=>{b.disabled=true;if(n===q.c)b.classList.add("correct");else if(n===i)b.classList.add("wrong")});
+ const f=$("feedback");f.className=`feedback show ${good?"good":"try"}`;f.innerHTML=`<strong>${good?"✓ Correct!":"Not quite—let's learn from it."}</strong><br>${q.e}`;
+ $("nextBtn").disabled=false;updateTop();
+}
+$("nextBtn").addEventListener("click",()=>{
+ if(!locked)return;
+ if(qIndex<stages[stageIndex].qs.length-1){qIndex++;render();}
+ else if(stageIndex<stages.length-1){stageIndex++;qIndex=0;render();}
+ else finish();
+});
+function finish(){
+ $("gameCard").classList.add("hidden");$("completeCard").classList.remove("hidden");$("progressFill").style.width="100%";
+ const pct=answered?Math.round(score/answered*100):0;
+ $("finalText").textContent=`You answered ${score} out of ${answered} questions correctly (${pct}%). ${pct>=80?"Excellent work, Chemist! You have a strong start in stoichiometry.":pct>=60?"Good effort! Review the explanations and try the bakery again to strengthen your skills.":"Every chemist learns by practicing. Revisit the stages and bake up a stronger score!"}`;
+ $("scoreLabel").textContent=`Final score: ${score} / ${answered}`;
+}
+function restart(){stageIndex=0;qIndex=0;score=0;answered=0;$("completeCard").classList.add("hidden");$("gameCard").classList.remove("hidden");render();}
+render();
+</script>
+</body>
+</html>
