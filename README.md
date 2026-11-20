@@ -1,2 +1,1 @@
-# compound-quest
-simulation trial
+
